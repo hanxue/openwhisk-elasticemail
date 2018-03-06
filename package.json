@@ -1,6 +1,6 @@
 {
   "name": "whisk-email",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Sending email on OpenWhisk using Elastic Email",
   "main": "elastic-emailer.js",
   "author": "Lee Hanxue",

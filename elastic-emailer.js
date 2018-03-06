@@ -27,6 +27,7 @@ function main(args) {
     }
     return { result: `Mail sent succesfully with id: ${result}` }
   })
+  return { error: 'Logically error. Email was not sent, error message uncaught.' }
 }
 
 exports.main = main
