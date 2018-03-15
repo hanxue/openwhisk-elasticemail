@@ -4,7 +4,7 @@
   "description": "Sending email on OpenWhisk using Elastic Email",
   "main": "elastic-emailer.js",
   "author": "Lee Hanxue",
-  "license": "BSD-3-Clause",
+  "license": "BSD-2-Clause",
   "private": false,
   "dependencies": {
     "request": "^2.85.0",
