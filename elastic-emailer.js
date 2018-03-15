@@ -1,5 +1,5 @@
 
-const elastic = require('elasticemail')
+const request = require('request-promise')
 
 function main(args) {
   if (!args.from) {
@@ -14,9 +14,6 @@ function main(args) {
     return { error: 'Body is required. Please set the "bodyText" or "bodyHtml parameter' }
   }
 
-  const client = elastic.createClient({
-    apikey: '44b6614c-5076-4447-8a1b-93bdbfb54895',
-  })
   const msg = {
     from: args.from,
     fromName: args.fromName,
@@ -27,17 +24,17 @@ function main(args) {
     apikey: args.apikey,
   }
 
-  client.mailer.send(msg, (err, result) => {
-  client.mailer.send(msg, function (err, result) {
-    console.error('DEBUG: Inside mailer.send, just before checking for err')
-    if (err) {
-      console.error('DEBUG: Just before error from sending email')
-      return { error: `Some problem sending email: ${err}` }
-    }
-    console.error('DEBUG: Just before return email successful')
-    return { result: `Mail sent succesfully with id: ${result}` }
+  return request({
+    url: 'https://api.elasticemail.com/v2/email/send',
+    method: 'POST',
+    qs: msg,
   })
-  return { error: 'Logic error! Email was not sent, error message uncaught.' }
+    .then((response) => {
+      return Promise.resolve({ message: response })
+    })
+    .catch((err) => {
+      return Promise.reject(new Error(`ERROR: ${err.message}`))
+    })
 }
 
 exports.main = main
