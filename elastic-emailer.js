@@ -22,20 +22,6 @@ function main(args) {
     bodyHtml: args.bodyHtml,
     apikey: args.apikey,
   }
-  const status = {
-    apikey: args.apikey,
-    transactionID: '',
-    showAbuse: true,
-    showClicked: true,
-    showDelivered: true,
-    showErrors: true,
-    showFailed: true,
-    showMessageIDs: true,
-    showOpened: true,
-    showPending: true,
-    showSent: true,
-    showUnsubscribed: true,
-  }
   const emailUrl = {
     uri: 'https://api.elasticemail.com/v2/email/send',
     qs: msg,
@@ -43,11 +29,6 @@ function main(args) {
   }
   const accountUrl = {
     uri: `https://api.elasticemail.com/v2/account/overview?apikey=${args.apikey}`,
-    json: true,
-  }
-  const statusUrl = {
-    uri: 'https://api.elasticemail.com/v2/email/getstatus',
-    qs: status,
     json: true,
   }
   let result = {}
@@ -61,19 +42,8 @@ function main(args) {
       return Promise.resolve(request(accountUrl))
     })
     .then((response) => {
-      if (!response.success) {
-        return response
-      }
       result.data.credit = response.data.credit
       result.data.emailsLeft = Math.floor(response.data.credit * (1000 / response.data.costperthousand))
-      status.transactionID = result.data.transactionid
-      return Promise.resolve(request(statusUrl))
-    })
-    .then((response) => {
-      if (!response.success) {
-        return response
-      }
-      result.data.status = response.data
       return Promise.resolve({ message: result })
     })
     .catch((err) => {
