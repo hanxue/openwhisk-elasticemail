@@ -39,7 +39,7 @@ function main(args) {
         return response
       }
       result = response
-      return request(accountUrl)
+      return Promise.resolve(request(accountUrl))
     })
     .then((response) => {
       result.data.credit = response.data.credit
