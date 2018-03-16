@@ -1,4 +1,3 @@
-
 const request = require('request-promise')
 
 function main(args) {
@@ -23,17 +22,32 @@ function main(args) {
     bodyHtml: args.bodyHtml,
     apikey: args.apikey,
   }
-
-  return request({
-    url: 'https://api.elasticemail.com/v2/email/send',
-    method: 'POST',
+  const emailUrl = {
+    uri: 'https://api.elasticemail.com/v2/email/send',
     qs: msg,
-  })
+    json: true,
+  }
+  const accountUrl = {
+    uri: `https://api.elasticemail.com/v2/account/overview?apikey=${args.apikey}`,
+    json: true,
+  }
+  let result = {}
+
+  return request(emailUrl)
     .then((response) => {
-      return Promise.resolve({ message: response })
+      if (!response.success) {
+        return response
+      }
+      result = response
+      return Promise.resolve(request(accountUrl))
+    })
+    .then((response) => {
+      result.data.credit = response.data.credit
+      result.data.emailsLeft = Math.floor(response.data.credit * (1000 / response.data.costperthousand))
+      return Promise.resolve({ message: result })
     })
     .catch((err) => {
-      return Promise.reject(new Error(`ERROR: ${err.message}`))
+      return Promise.reject(`ERROR: ${err.message}`)
     })
 }
 
